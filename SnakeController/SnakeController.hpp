@@ -31,6 +31,7 @@ public:
     Controller& operator=(Controller const& p_rhs) = delete;
 
     void receive(std::unique_ptr<Event> e) override;
+    void lose();
 
 private:
     struct Segment
@@ -49,6 +50,7 @@ private:
 
     Direction m_currentDirection;
     std::list<Segment> m_segments;
+    bool lost;
 };
 
 } // namespace Snake
