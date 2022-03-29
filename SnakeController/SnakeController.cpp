@@ -81,16 +81,12 @@ void Controller::receive(std::unique_ptr<Event> e)
         newHead.y = currentHead.y + (not (m_currentDirection & 0b01) ? (m_currentDirection & 0b10) ? 1 : -1 : 0);
         newHead.ttl = currentHead.ttl; // zmiana miejsca głowy
 
-        //bool lost = false;
-
-        for (auto segment : m_segments) {
+        /*for (auto segment : m_segments) {
             if (segment.x == newHead.x and segment.y == newHead.y) {
-                /*m_scorePort.send(std::make_unique<EventT<LooseInd>>()); // 1 powtorzenie
-                lost = true;*/
                 this->lose();
                 break;
             }
-        } // funkcja ktora sprawdza czy gracz przegrzal
+        }*/ // funkcja ktora sprawdza czy gracz przegrzal
 
         if (not lost) {
             if (std::make_pair(newHead.x, newHead.y) == m_foodPosition) {
@@ -99,8 +95,6 @@ void Controller::receive(std::unique_ptr<Event> e)
             } else if (newHead.x < 0 or newHead.y < 0 or
                        newHead.x >= m_mapDimension.first or
                        newHead.y >= m_mapDimension.second) {
-                /*m_scorePort.send(std::make_unique<EventT<LooseInd>>()); // 2 powtorzenie
-                lost = true;*/
                 this->lose();
             } else {
                 for (auto &segment : m_segments) {
@@ -111,6 +105,9 @@ void Controller::receive(std::unique_ptr<Event> e)
                         l_evt.value = Cell_FREE;
 
                         m_displayPort.send(std::make_unique<EventT<DisplayInd>>(l_evt));
+                    }else if(segment.x == newHead.x and segment.y == newHead.y) {
+                        this->lose();
+                        break;
                     }
                 }
             }
